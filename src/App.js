@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import {Switch, Route} from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
-function App() {
+import Home from './pages/index';
+import User from './pages/user';
+import EditProfile from './pages/edit-profile';
+
+import { setMessage } from './redux/reducers/form';
+
+
+const App = () => {
+    const history = useHistory();
+    const state = useSelector((allState) => allState);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(state.auth.isAuth){
+            history.push('/edit-profile');
+        }
+    }, [state.auth.isAuth]);
+    useEffect(() => {
+        dispatch(setMessage(""));
+    }, [state.form.name]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Switch>
+        <Route path="/" exact>
+            <Home /> 
+        </Route>
+        <Route path="/user/:id" exact>
+            <User /> 
+        </Route>
+        <Route path="/edit-profile" exact>
+            <EditProfile /> 
+        </Route>
+    </Switch>
+  )
 }
 
 export default App;
